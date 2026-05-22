@@ -16,20 +16,20 @@ public class InMemoryDatabase {
     private InMemoryDatabase() {
         users.add(new User("admin", "admin"));
 
-        List<String> o1 = List.of("Berlin","Madrid","Paris","Rome");
-        questions.add(new Question("What is the capital of France?", o1, 2));
+        List<String> o1 = List.of("Banking services", "Digital engineering and consulting", "Retail operations", "Manufacturing");
+        questions.add(new Question("What is Virtusa primarily known for?", o1, 1));
 
-        List<String> o2 = List.of("3","4","5","6");
-        questions.add(new Question("2 + 2 = ?", o2, 1));
+        List<String> o2 = List.of("Real estate investment", "Cloud and digital transformation", "Hotel management", "Retail distribution");
+        questions.add(new Question("Which of the following is a core service offered by Virtusa?", o2, 1));
 
-        List<String> o3 = List.of("Java","C#","Python","JavaScript");
-        questions.add(new Question("Which language runs in a web browser?", o3, 3));
+        List<String> o3 = List.of("Entertainment", "Banking, Healthcare, Communications, Media & Technology", "Agriculture", "Hospitality");
+        questions.add(new Question("In which domain does Virtusa provide solutions?", o3, 1));
 
-        List<String> o4 = List.of("Hyper Text Markup Language","Home Tool Markup Language","Hyperlinks Text Markup Language","Hyperlinking Text Markup Language");
-        questions.add(new Question("HTML stands for?", o4, 0));
+        List<String> o4 = List.of("Traditional paperwork", "Legacy system modernization and cloud adoption", "Manual operations", "Offline processes");
+        questions.add(new Question("What is a key focus area for Virtusa in digital transformation?", o4, 1));
 
-        List<String> o5 = List.of("Google","Facebook","Twitter","Microsoft");
-        questions.add(new Question("Which company created React?", o5, 1));
+        List<String> o5 = List.of("Waterfall only", "Agile and DevOps methodologies", "No structured approach", "Manual coding without standards");
+        questions.add(new Question("Which development approach does Virtusa commonly employ for software projects?", o5, 1));
 
         for (User u: users) if (u.getId()==null) u.setId(UUID.randomUUID().toString());
         for (Question q: questions) if (q.getId()==null) q.setId(UUID.randomUUID().toString());
