@@ -8,6 +8,7 @@ import java.util.Date;
 public class Result {
     private String id;
     private String userId;
+    private String userEmail;
     private int total;
     private int correct;
     private double percentage;
@@ -15,8 +16,9 @@ public class Result {
 
     public Result() {}
 
-    public Result(String userId, int total, int correct, double percentage) {
+    public Result(String userId, String userEmail, int total, int correct, double percentage) {
         this.userId = userId;
+        this.userEmail = userEmail;
         this.total = total;
         this.correct = correct;
         this.percentage = percentage;
@@ -28,6 +30,8 @@ public class Result {
     public void setId(String id) { this.id = id; }
 
     public String getUserId() { return userId; }
+
+    public String getUserEmail() { return userEmail; }
 
     public int getTotal() { return total; }
 

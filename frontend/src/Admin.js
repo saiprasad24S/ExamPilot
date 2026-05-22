@@ -178,7 +178,7 @@ export default function Admin() {
             <table className="results-table">
               <thead>
                 <tr>
-                  <th>Username</th>
+                  <th>Email Address</th>
                   <th>Score</th>
                   <th>Total</th>
                   <th>Percentage</th>

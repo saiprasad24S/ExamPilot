@@ -28,7 +28,7 @@ public class QuizService {
         int total = qs.size();
         double pct = ((double) correct / total) * 100.0;
         System.out.println("\nResult: total=" + total + ", correct=" + correct + ", percent=" + String.format("%.2f", pct) + "%");
-        Result r = new Result(user.getId(), total, correct, pct);
+        Result r = new Result(user.getId(), user.getUsername() + "@local.test", total, correct, pct);
         InMemoryDatabase.getInstance().saveResult(r);
         System.out.println("Saved result.");
     }

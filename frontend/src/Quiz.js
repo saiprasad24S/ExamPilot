@@ -6,7 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import './Quiz.css';
 
-export default function Quiz({ userId, onQuizComplete }) {
+export default function Quiz({ userId, userEmail, onQuizComplete }) {
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -66,6 +66,7 @@ export default function Quiz({ userId, onQuizComplete }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId,
+          userEmail,
           answers: Object.values(answers)
         })
       });

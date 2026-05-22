@@ -222,7 +222,9 @@ public class SimpleServer {
             if (!"POST".equalsIgnoreCase(ex.getRequestMethod())) { ex.sendResponseHeaders(405, -1); return; }
             String body = readAll(ex.getRequestBody());
             String userId = extractString(body, "userId");
+            String userEmail = extractString(body, "userEmail");
             if (userId == null) userId = "anonymous";
+            if (userEmail == null) userEmail = "unknown@example.com";
             
             List<Question> allQuestions = InMemoryDatabase.getInstance().questions();
             int n = Math.min(5, allQuestions.size());
@@ -236,7 +238,7 @@ public class SimpleServer {
                 }
             }
             
-            Result r = new Result(userId, n, score, (score * 100.0) / n);
+            Result r = new Result(userId, userEmail, n, score, (score * 100.0) / n);
             InMemoryDatabase.getInstance().saveResult(r);
             
             StringBuilder resp = new StringBuilder();
@@ -278,18 +280,16 @@ public class SimpleServer {
             if (!"GET".equalsIgnoreCase(ex.getRequestMethod())) { ex.sendResponseHeaders(405, -1); return; }
             
             List<Result> allResults = InMemoryDatabase.getInstance().results();
-            List<User> allUsers = InMemoryDatabase.getInstance().users();
             
             StringBuilder resp = new StringBuilder();
             resp.append("{\"results\":[");
             
             for (int i = 0; i < allResults.size(); i++) {
                 Result result = allResults.get(i);
-                User user = allUsers.stream().filter(u -> u.getId().equals(result.getUserId())).findFirst().orElse(null);
-                String username = user != null ? user.getUsername() : "Unknown User";
+                String userEmail = result.getUserEmail() != null ? result.getUserEmail() : "Unknown User";
                 
                 if (i > 0) resp.append(',');
-                resp.append("{\"username\":\"").append(escape(username)).append("\",");
+                resp.append("{\"username\":\"").append(escape(userEmail)).append("\",");
                 resp.append("\"score\":").append(result.getCorrect()).append(",");
                 resp.append("\"total\":").append(result.getTotal()).append(",");
                 resp.append("\"percentage\":").append(String.format("%.2f", result.getPercentage())).append("}");

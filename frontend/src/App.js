@@ -29,16 +29,18 @@ export default function App() {
   const { isSignedIn } = useAuth();
   const [currentPage, setCurrentPage] = useState('login');
   const [userId, setUserId] = useState(null);
+  const [userEmail, setUserEmail] = useState('');
   const [username, setUsername] = useState('');
   const [quizResult, setQuizResult] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [isAdminLogged, setIsAdminLogged] = useState(false);
   const [authMode, setAuthMode] = useState(null); // 'admin' or 'user'
 
-  // Update userId and username when Clerk user changes
+  // Update userId, userEmail and username when Clerk user changes
   useEffect(() => {
     if (isLoaded && user) {
       setUserId(user.id);
+      setUserEmail(user.emailAddresses[0]?.emailAddress || 'user@example.com');
       setUsername(user.firstName || user.emailAddresses[0]?.emailAddress || 'User');
     }
   }, [user, isLoaded]);
@@ -129,7 +131,7 @@ export default function App() {
         <main className="main-content">
           <Suspense fallback={<LoadingSpinner />}>
             {currentPage === 'quiz' && userId && (
-              <Quiz userId={userId} onQuizComplete={handleQuizComplete} />
+              <Quiz userId={userId} userEmail={userEmail} onQuizComplete={handleQuizComplete} />
             )}
 
             {currentPage === 'result' && quizResult && (
