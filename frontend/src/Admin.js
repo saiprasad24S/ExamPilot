@@ -86,13 +86,7 @@ export default function Admin() {
     setAdminMode('results');
     fetchResults();
   };
-  <button
-          className={adminMode === 'results' ? 'active' : ''}
-          onClick={handleViewResults}
-        >
-          View Results
-        </button>
-      
+
   return (
     <div className="admin-container">
       <h2>Admin Panel</h2>
@@ -108,6 +102,12 @@ export default function Admin() {
           onClick={() => setAdminMode('bulk')}
         >
           Bulk Upload
+        </button>
+        <button
+          className={adminMode === 'results' ? 'active' : ''}
+          onClick={handleViewResults}
+        >
+          View Results
         </button>
       </div>
 

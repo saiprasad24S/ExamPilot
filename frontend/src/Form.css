@@ -79,6 +79,17 @@
   animation: slideUp 0.3s ease-out;
 }
 
+.error-message {
+  background: #fed7d7;
+  color: #c53030;
+  padding: 0.8rem;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 1rem;
+  animation: slideUp 0.3s ease-out;
+  border-left: 4px solid #c53030;
+}
+
 /* ========== Timer Input Styling ========== */
 .timer-input-group {
   display: flex;

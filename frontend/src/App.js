@@ -14,6 +14,7 @@ const Register = lazy(() => import('./Register'));
 const Quiz = lazy(() => import('./Quiz'));
 const Result = lazy(() => import('./Result'));
 const Admin = lazy(() => import('./Admin'));
+const AdminLogin = lazy(() => import('./AdminLogin'));
 
 // Loading spinner component
 const LoadingSpinner = () => (
@@ -31,6 +32,8 @@ export default function App() {
   const [username, setUsername] = useState('');
   const [quizResult, setQuizResult] = useState(null);
   const [questions, setQuestions] = useState([]);
+  const [isAdminLogged, setIsAdminLogged] = useState(false);
+  const [authMode, setAuthMode] = useState(null); // 'admin' or 'user'
 
   // Update userId and username when Clerk user changes
   useEffect(() => {
@@ -63,91 +66,145 @@ export default function App() {
     setCurrentPage(page);
   };
 
+  const handleAdminLogin = (adminUsername) => {
+    setIsAdminLogged(true);
+    setUsername(adminUsername);
+    setCurrentPage('admin');
+  };
+
+  const handleAdminLogout = () => {
+    setIsAdminLogged(false);
+    setAuthMode(null);
+    setCurrentPage('login');
+  };
+
   if (!isLoaded) {
     return <LoadingSpinner />;
   }
 
+  // Admin logged in view
+  if (isAdminLogged) {
+    return (
+      <div className="app">
+        <header className="header">
+          <h1>ExamPilot - Admin Panel</h1>
+          <div className="user-info">
+            <span>Admin: {username}</span>
+            <button onClick={handleAdminLogout} className="logout-btn">
+              Logout
+            </button>
+          </div>
+        </header>
+
+        <main className="main-content">
+          <Suspense fallback={<LoadingSpinner />}>
+            {currentPage === 'admin' && <Admin />}
+          </Suspense>
+        </main>
+      </div>
+    );
+  }
+
+  // User/Clerk authenticated view
+  if (isSignedIn && isLoaded) {
+    return (
+      <div className="app">
+        <header className="header">
+          <h1>ExamPilot - Quiz System</h1>
+          <div className="user-info">
+            <span>Welcome, {username}</span>
+            <UserButton afterSignOutUrl="/" />
+          </div>
+        </header>
+
+        <nav className="navigation">
+          <button
+            className={currentPage === 'quiz' ? 'active' : ''}
+            onClick={() => handlePageChange('quiz')}
+          >
+            Take Quiz
+          </button>
+        </nav>
+
+        <main className="main-content">
+          <Suspense fallback={<LoadingSpinner />}>
+            {currentPage === 'quiz' && userId && (
+              <Quiz userId={userId} onQuizComplete={handleQuizComplete} />
+            )}
+
+            {currentPage === 'result' && quizResult && (
+              <Result result={quizResult} questions={questions} />
+            )}
+          </Suspense>
+        </main>
+      </div>
+    );
+  }
+
+  // Initial login choice screen
   return (
     <div className="app">
-      <SignedOut>
-        <div className="app">
-          <header className="header">
-            <h1>ExamPilot</h1>
-          </header>
-          <main className="main-content auth-container">
-            <Suspense fallback={<LoadingSpinner />}>
-              {currentPage === 'login' ? (
-                <div>
-                  <Login />
-                  <p className="toggle-text">
-                    Don't have an account?{' '}
-                    <button
-                      onClick={() => setCurrentPage('register')}
-                      className="link-btn"
-                    >
-                      Sign Up
-                    </button>
-                  </p>
-                </div>
-              ) : (
-                <div>
-                  <Register />
-                  <p className="toggle-text">
-                    Already have an account?{' '}
-                    <button
-                      onClick={() => setCurrentPage('login')}
-                      className="link-btn"
-                    >
-                      Sign In
-                    </button>
-                  </p>
-                </div>
-              )}
-            </Suspense>
-          </main>
-        </div>
-      </SignedOut>
-
-      <SignedIn>
-        <div className="app">
-          <header className="header">
-            <h1>ExamPilot</h1>
-            <div className="user-info">
-              <span>Welcome, {username}</span>
-              <UserButton afterSignOutUrl="/" />
-            </div>
-          </header>
-
-          <nav className="navigation">
+      <header className="header">
+        <h1>ExamPilot - Quiz System</h1>
+      </header>
+      <main className="main-content auth-container">
+        <div className="auth-choice">
+          <h2>Welcome to ExamPilot</h2>
+          <p>Please select your login type:</p>
+          <div className="choice-buttons">
             <button
-              className={currentPage === 'quiz' ? 'active' : ''}
-              onClick={() => handlePageChange('quiz')}
+              className="choice-btn admin-btn"
+              onClick={() => setAuthMode('admin')}
             >
-              Quiz
+              Admin Login
             </button>
             <button
-              className={currentPage === 'admin' ? 'active' : ''}
-              onClick={() => handlePageChange('admin')}
+              className="choice-btn user-btn"
+              onClick={() => setAuthMode('user')}
             >
-              Admin
+              User Login (Quiz)
             </button>
-          </nav>
-
-          <main className="main-content">
-            <Suspense fallback={<LoadingSpinner />}>
-              {currentPage === 'quiz' && userId && (
-                <Quiz userId={userId} onQuizComplete={handleQuizComplete} />
-              )}
-
-              {currentPage === 'result' && quizResult && (
-                <Result result={quizResult} questions={questions} />
-              )}
-
-              {currentPage === 'admin' && <Admin />}
-            </Suspense>
-          </main>
+          </div>
         </div>
-      </SignedIn>
+
+        {authMode === 'admin' && (
+          <Suspense fallback={<LoadingSpinner />}>
+            <AdminLogin onLoginSuccess={handleAdminLogin} />
+          </Suspense>
+        )}
+
+        {authMode === 'user' && (
+          <Suspense fallback={<LoadingSpinner />}>
+            {currentPage === 'login' ? (
+              <div>
+                <Login />
+                <p className="toggle-text">
+                  Don't have an account?{' '}
+                  <button
+                    onClick={() => setCurrentPage('register')}
+                    className="link-btn"
+                  >
+                    Sign Up
+                  </button>
+                </p>
+              </div>
+            ) : (
+              <div>
+                <Register />
+                <p className="toggle-text">
+                  Already have an account?{' '}
+                  <button
+                    onClick={() => setCurrentPage('login')}
+                    className="link-btn"
+                  >
+                    Sign In
+                  </button>
+                </p>
+              </div>
+            )}
+          </Suspense>
+        )}
+      </main>
     </div>
   );
 }
