@@ -27,6 +27,7 @@ public class SimpleServer {
         server.createContext("/api/admin/add", new AddQuestionHandler());
         server.createContext("/api/admin/upload", new UploadHandler());
         server.createContext("/api/quiz/submit", new SubmitHandler());
+        server.createContext("/api/admin/results", new ResultsHandler());
         
         server.setExecutor(null);
         System.out.println("SimpleServer started at http://localhost:8080");
@@ -262,6 +263,40 @@ public class SimpleServer {
                 }
             }
             return -1;
+        }
+    }
+
+    static class ResultsHandler implements HttpHandler {
+        @Override public void handle(HttpExchange ex) throws IOException {
+            if ("OPTIONS".equalsIgnoreCase(ex.getRequestMethod())) {
+                ex.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+                ex.getResponseHeaders().set("Access-Control-Allow-Headers", "Content-Type");
+                ex.getResponseHeaders().set("Access-Control-Allow-Methods", "GET,OPTIONS");
+                ex.sendResponseHeaders(204, -1);
+                return;
+            }
+            if (!"GET".equalsIgnoreCase(ex.getRequestMethod())) { ex.sendResponseHeaders(405, -1); return; }
+            
+            List<Result> allResults = InMemoryDatabase.getInstance().results();
+            List<User> allUsers = InMemoryDatabase.getInstance().users();
+            
+            StringBuilder resp = new StringBuilder();
+            resp.append("{\"results\":[");
+            
+            for (int i = 0; i < allResults.size(); i++) {
+                Result result = allResults.get(i);
+                User user = allUsers.stream().filter(u -> u.getId().equals(result.getUserId())).findFirst().orElse(null);
+                String username = user != null ? user.getUsername() : "Unknown User";
+                
+                if (i > 0) resp.append(',');
+                resp.append("{\"username\":\"").append(escape(username)).append("\",");
+                resp.append("\"score\":").append(result.getCorrect()).append(",");
+                resp.append("\"total\":").append(result.getTotal()).append(",");
+                resp.append("\"percentage\":").append(String.format("%.2f", result.getPercentage())).append("}");
+            }
+            
+            resp.append("]}");
+            sendJson(ex, 200, resp.toString());
         }
     }
 

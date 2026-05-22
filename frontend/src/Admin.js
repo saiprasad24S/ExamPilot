@@ -14,6 +14,8 @@ export default function Admin() {
   const [questionTimer, setQuestionTimer] = useState(30);
   const [jsonInput, setJsonInput] = useState('');
   const [message, setMessage] = useState('');
+  const [results, setResults] = useState([]);
+  const [loadingResults, setLoadingResults] = useState(false);
 
   const handleAddQuestion = async (e) => {
     e.preventDefault();
@@ -68,6 +70,29 @@ export default function Admin() {
     }
   };
 
+  const fetchResults = async () => {
+    setLoadingResults(true);
+    try {
+      const response = await fetch('http://localhost:8080/api/admin/results');
+      const data = await response.json();
+      setResults(data.results || []);
+    } catch (error) {
+      setMessage('Error fetching results');
+    }
+    setLoadingResults(false);
+  };
+
+  const handleViewResults = () => {
+    setAdminMode('results');
+    fetchResults();
+  };
+  <button
+          className={adminMode === 'results' ? 'active' : ''}
+          onClick={handleViewResults}
+        >
+          View Results
+        </button>
+      
   return (
     <div className="admin-container">
       <h2>Admin Panel</h2>
@@ -118,7 +143,38 @@ export default function Admin() {
           <div className="timer-input-group">
             <label htmlFor="timer">Timer per question (seconds):</label>
             <input
-              id="timer"
+        
+
+      {adminMode === 'results' && (
+        <div className="results-container">
+          {loadingResults ? (
+            <p className="loading">Loading results...</p>
+          ) : results.length === 0 ? (
+            <p className="no-data">No test results yet</p>
+          ) : (
+            <table className="results-table">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Score</th>
+                  <th>Total</th>
+                  <th>Percentage</th>
+                </tr>
+              </thead>
+              <tbody>
+                {results.map((result, index) => (
+                  <tr key={index}>
+                    <td>{result.username}</td>
+                    <td>{result.score}</td>
+                    <td>{result.total}</td>
+                    <td>{result.percentage}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}      id="timer"
               type="number"
               min="5"
               max="300"
