@@ -143,7 +143,30 @@ export default function Admin() {
           <div className="timer-input-group">
             <label htmlFor="timer">Timer per question (seconds):</label>
             <input
-        
+              id="timer"
+              type="number"
+              min="5"
+              max="300"
+              value={questionTimer}
+              onChange={(e) => setQuestionTimer(parseInt(e.target.value) || 30)}
+              placeholder="Seconds"
+            />
+          </div>
+          <button type="submit">Add Question</button>
+        </form>
+      )}
+
+      {adminMode === 'bulk' && (
+        <form onSubmit={handleBulkUpload} className="form-card">
+          <textarea
+            placeholder="Paste JSON array of questions with timer field: {text, options[], correctIndex, timer}"
+            value={jsonInput}
+            onChange={(e) => setJsonInput(e.target.value)}
+            rows="10"
+          ></textarea>
+          <button type="submit">Upload Questions</button>
+        </form>
+      )}
 
       {adminMode === 'results' && (
         <div className="results-container">
@@ -174,29 +197,6 @@ export default function Admin() {
             </table>
           )}
         </div>
-      )}      id="timer"
-              type="number"
-              min="5"
-              max="300"
-              value={questionTimer}
-              onChange={(e) => setQuestionTimer(parseInt(e.target.value) || 30)}
-              placeholder="Seconds"
-            />
-          </div>
-          <button type="submit">Add Question</button>
-        </form>
-      )}
-
-      {adminMode === 'bulk' && (
-        <form onSubmit={handleBulkUpload} className="form-card">
-          <textarea
-            placeholder="Paste JSON array of questions with timer field: {text, options[], correctIndex, timer}"
-            value={jsonInput}
-            onChange={(e) => setJsonInput(e.target.value)}
-            rows="10"
-          ></textarea>
-          <button type="submit">Upload Questions</button>
-        </form>
       )}
 
       {message && <p className="message">{message}</p>}

@@ -2,33 +2,33 @@
   "questions": [
     {
       "id": 1,
-      "question": "What is the capital of France?",
-      "options": ["London", "Berlin", "Paris", "Madrid"],
-      "correctIndex": 2
+      "question": "What is Virtusa primarily known for?",
+      "options": ["Banking services", "Digital engineering and consulting", "Retail operations", "Manufacturing"],
+      "correctIndex": 1
     },
     {
       "id": 2,
-      "question": "Which planet is known as the Red Planet?",
-      "options": ["Venus", "Mars", "Jupiter", "Saturn"],
+      "question": "Which of the following is a core service offered by Virtusa?",
+      "options": ["Real estate investment", "Cloud and digital transformation", "Hotel management", "Retail distribution"],
       "correctIndex": 1
     },
     {
       "id": 3,
-      "question": "What is the largest ocean on Earth?",
-      "options": ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"],
-      "correctIndex": 3
+      "question": "In which domain does Virtusa provide solutions?",
+      "options": ["Entertainment", "Banking, Healthcare, Communications, Media & Technology", "Agriculture", "Hospitality"],
+      "correctIndex": 1
     },
     {
       "id": 4,
-      "question": "Who wrote 'Romeo and Juliet'?",
-      "options": ["Jane Austen", "William Shakespeare", "Charles Dickens", "Mark Twain"],
+      "question": "What is a key focus area for Virtusa in digital transformation?",
+      "options": ["Traditional paperwork", "Legacy system modernization and cloud adoption", "Manual operations", "Offline processes"],
       "correctIndex": 1
     },
     {
       "id": 5,
-      "question": "What is the smallest prime number?",
-      "options": ["0", "1", "2", "3"],
-      "correctIndex": 2
+      "question": "Which development approach does Virtusa commonly employ for software projects?",
+      "options": ["Waterfall only", "Agile and DevOps methodologies", "No structured approach", "Manual coding without standards"],
+      "correctIndex": 1
     }
   ]
 }
