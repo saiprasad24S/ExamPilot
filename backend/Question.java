@@ -1,3 +1,8 @@
+/**
+ * Question.java - Data model class representing a quiz question with multiple choice options and a correct answer.
+ * Stores question text, answer options, correct answer index, and timer configuration.
+ */
+
 import java.util.List;
 
 public class Question {

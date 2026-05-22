@@ -1,3 +1,8 @@
+/**
+ * QuestionService.java - Service layer for managing quiz questions including adding, listing, and retrieving questions.
+ * Handles question creation through interactive prompts and database operations.
+ */
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;

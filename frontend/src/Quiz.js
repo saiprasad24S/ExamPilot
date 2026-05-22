@@ -1,3 +1,8 @@
+/**
+ * Quiz.js - Interactive quiz component that displays questions one by one with a countdown timer.
+ * Manages user answers, navigation between questions, and submits quiz responses to the backend.
+ */
+
 import React, { useState, useEffect } from 'react';
 import './Quiz.css';
 

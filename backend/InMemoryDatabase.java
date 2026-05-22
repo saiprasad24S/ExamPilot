@@ -1,3 +1,8 @@
+/**
+ * InMemoryDatabase.java - Singleton database that stores all quiz data (users, questions, results) in memory.
+ * Provides CRUD operations for users, questions, and results without requiring external database setup.
+ */
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

@@ -1,3 +1,8 @@
+/**
+ * User.java - Data model class representing a quiz application user with username and password authentication.
+ * Contains user identity information and credentials for login/registration.
+ */
+
 public class User {
     private String id;
     private String username;

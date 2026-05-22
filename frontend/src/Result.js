@@ -1,3 +1,8 @@
+/**
+ * Result.js - Displays the quiz results including score, percentage, and detailed answer review.
+ * Shows user's answers vs correct answers with visual indicators for correct/incorrect responses.
+ */
+
 import React, { useState } from 'react';
 import './Quiz.css';
 

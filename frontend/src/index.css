@@ -1,3 +1,8 @@
+/**
+ * index.css - Global CSS stylesheet for HTML5 elements and root styling including font families, colors, and basic element styling.
+ * Ensures consistent baseline styles across the entire application.
+ */
+
 * {
   margin: 0;
   padding: 0;

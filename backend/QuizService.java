@@ -1,3 +1,8 @@
+/**
+ * QuizService.java - Service layer for quiz execution including starting quiz, recording answers, and calculating scores.
+ * Manages the quiz flow from question display to result computation and storage.
+ */
+
 import java.util.List;
 import java.util.Scanner;
 

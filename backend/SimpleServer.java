@@ -1,3 +1,8 @@
+/**
+ * SimpleServer.java - Main HTTP server that handles all API endpoints for user authentication, quiz questions, and result submission.
+ * Uses Java's built-in HttpServer to create a REST API with CORS support and JSON request/response handling.
+ */
+
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;

@@ -1,3 +1,8 @@
+/**
+ * Quiz.css - Stylesheet for the interactive quiz page including question display, answer options, timer display, and navigation buttons.
+ * Provides visual styling for quiz container, question cards, options, and quiz submission state.
+ */
+
 .quiz-container {
   background: white;
   padding: 2rem;

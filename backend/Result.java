@@ -1,3 +1,8 @@
+/**
+ * Result.java - Data model class representing quiz result with user answers, score, and submission timestamp.
+ * Stores quiz performance data including individual answers and final score calculation.
+ */
+
 import java.util.Date;
 
 public class Result {

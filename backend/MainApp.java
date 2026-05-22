@@ -1,3 +1,8 @@
+/**
+ * MainApp.java - Console-based test interface for quiz application with menu-driven user interaction.
+ * Allows testing of registration, login, quiz taking, and admin question management without the web UI.
+ */
+
 import java.util.Scanner;
 
 public class MainApp {

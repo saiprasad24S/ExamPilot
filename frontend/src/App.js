@@ -1,18 +1,46 @@
-import React, { useState, useEffect } from 'react';
+/**
+ * App.js - Main application component that manages authentication, routing, and lazy loading of all pages.
+ * Integrates Clerk authentication for secure user login/signup and uses React.lazy for code splitting.
+ * Handles the main app state including quiz results, questions, and page navigation.
+ */
+
+import React, { useState, useEffect, Suspense, lazy } from 'react';
+import { useUser, useAuth, SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
 import './App.css';
-import Login from './Login';
-import Register from './Register';
-import Quiz from './Quiz';
-import Result from './Result';
-import Admin from './Admin';
+
+// Lazy load components
+const Login = lazy(() => import('./Login'));
+const Register = lazy(() => import('./Register'));
+const Quiz = lazy(() => import('./Quiz'));
+const Result = lazy(() => import('./Result'));
+const Admin = lazy(() => import('./Admin'));
+
+// Loading spinner component
+const LoadingSpinner = () => (
+  <div className="loading-spinner">
+    <div className="spinner"></div>
+    <p>Loading...</p>
+  </div>
+);
 
 export default function App() {
+  const { user, isLoaded } = useUser();
+  const { isSignedIn } = useAuth();
   const [currentPage, setCurrentPage] = useState('login');
   const [userId, setUserId] = useState(null);
   const [username, setUsername] = useState('');
   const [quizResult, setQuizResult] = useState(null);
   const [questions, setQuestions] = useState([]);
 
+  // Update userId and username when Clerk user changes
+  useEffect(() => {
+    if (isLoaded && user) {
+      setUserId(user.id);
+      setUsername(user.firstName || user.emailAddresses[0]?.emailAddress || 'User');
+    }
+  }, [user, isLoaded]);
+
+  // Fetch questions on mount
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -26,18 +54,6 @@ export default function App() {
     fetchQuestions();
   }, []);
 
-  const handleLoginSuccess = (id, name) => {
-    setUserId(id);
-    setUsername(name);
-    setCurrentPage('quiz');
-  };
-
-  const handleRegisterSuccess = (id, name) => {
-    setUserId(id);
-    setUsername(name);
-    setCurrentPage('quiz');
-  };
-
   const handleQuizComplete = (result) => {
     setQuizResult(result);
     setCurrentPage('result');
@@ -45,30 +61,64 @@ export default function App() {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    if (page === 'login') {
-      setUserId(null);
-      setUsername('');
-      setQuizResult(null);
-    }
   };
+
+  if (!isLoaded) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="app">
-      <header className="header">
-        <h1>ExamPilot</h1>
-        {userId && (
-          <div className="user-info">
-            <span>Welcome, {username}</span>
-            <button onClick={() => handlePageChange('login')} className="logout-btn">
-              Logout
-            </button>
-          </div>
-        )}
-      </header>
+      <SignedOut>
+        <div className="app">
+          <header className="header">
+            <h1>ExamPilot</h1>
+          </header>
+          <main className="main-content auth-container">
+            <Suspense fallback={<LoadingSpinner />}>
+              {currentPage === 'login' ? (
+                <div>
+                  <Login />
+                  <p className="toggle-text">
+                    Don't have an account?{' '}
+                    <button
+                      onClick={() => setCurrentPage('register')}
+                      className="link-btn"
+                    >
+                      Sign Up
+                    </button>
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <Register />
+                  <p className="toggle-text">
+                    Already have an account?{' '}
+                    <button
+                      onClick={() => setCurrentPage('login')}
+                      className="link-btn"
+                    >
+                      Sign In
+                    </button>
+                  </p>
+                </div>
+              )}
+            </Suspense>
+          </main>
+        </div>
+      </SignedOut>
 
-      <nav className="navigation">
-        {userId && (
-          <>
+      <SignedIn>
+        <div className="app">
+          <header className="header">
+            <h1>ExamPilot</h1>
+            <div className="user-info">
+              <span>Welcome, {username}</span>
+              <UserButton afterSignOutUrl="/" />
+            </div>
+          </header>
+
+          <nav className="navigation">
             <button
               className={currentPage === 'quiz' ? 'active' : ''}
               onClick={() => handlePageChange('quiz')}
@@ -81,45 +131,23 @@ export default function App() {
             >
               Admin
             </button>
-          </>
-        )}
-      </nav>
+          </nav>
 
-      <main className="main-content">
-        {currentPage === 'login' && (
-          <div>
-            <Login onLoginSuccess={handleLoginSuccess} />
-            <p className="toggle-text">
-              Don't have an account?{' '}
-              <button onClick={() => setCurrentPage('register')} className="link-btn">
-                Register
-              </button>
-            </p>
-          </div>
-        )}
+          <main className="main-content">
+            <Suspense fallback={<LoadingSpinner />}>
+              {currentPage === 'quiz' && userId && (
+                <Quiz userId={userId} onQuizComplete={handleQuizComplete} />
+              )}
 
-        {currentPage === 'register' && (
-          <div>
-            <Register onRegisterSuccess={handleRegisterSuccess} />
-            <p className="toggle-text">
-              Already have an account?{' '}
-              <button onClick={() => setCurrentPage('login')} className="link-btn">
-                Login
-              </button>
-            </p>
-          </div>
-        )}
+              {currentPage === 'result' && quizResult && (
+                <Result result={quizResult} questions={questions} />
+              )}
 
-        {currentPage === 'quiz' && userId && (
-          <Quiz userId={userId} onQuizComplete={handleQuizComplete} />
-        )}
-
-        {currentPage === 'result' && quizResult && (
-          <Result result={quizResult} questions={questions} />
-        )}
-
-        {currentPage === 'admin' && <Admin />}
-      </main>
+              {currentPage === 'admin' && <Admin />}
+            </Suspense>
+          </main>
+        </div>
+      </SignedIn>
     </div>
   );
 }

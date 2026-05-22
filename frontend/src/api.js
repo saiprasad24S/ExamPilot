@@ -1,3 +1,8 @@
+/**
+ * api.js - Centralized API client module that handles all HTTP requests to the backend server.
+ * Contains functions for authentication (login/register), quiz operations (fetch/submit), and admin panel operations.
+ */
+
 const API_BASE_URL = 'http://localhost:8080/api';
 
 export const register = async (username, password) => {

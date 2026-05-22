@@ -1,3 +1,8 @@
+/**
+ * Admin.js - Admin panel for managing quiz questions with options to add individual questions or bulk upload.
+ * Includes fields for question text, multiple choice options, correct answer selection, and timer configuration.
+ */
+
 import React, { useState } from 'react';
 import './Form.css';
 
@@ -6,6 +11,7 @@ export default function Admin() {
   const [question, setQuestion] = useState('');
   const [options, setOptions] = useState(['', '', '', '']);
   const [correctIndex, setCorrectIndex] = useState(0);
+  const [questionTimer, setQuestionTimer] = useState(30);
   const [jsonInput, setJsonInput] = useState('');
   const [message, setMessage] = useState('');
 
@@ -18,21 +24,28 @@ export default function Admin() {
       return;
     }
 
+    if (questionTimer <= 0) {
+      setMessage('Timer must be greater than 0 seconds');
+      return;
+    }
+
     try {
       const response = await fetch('http://localhost:8080/api/admin/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          question,
+          text: question,
           options: validOptions,
-          correctIndex: Math.min(correctIndex, validOptions.length - 1)
+          correctIndex: Math.min(correctIndex, validOptions.length - 1),
+          timer: questionTimer
         })
       });
       const data = await response.json();
-      setMessage(data.message || 'Question added');
+      setMessage(data.message || 'Question added successfully');
       setQuestion('');
       setOptions(['', '', '', '']);
       setCorrectIndex(0);
+      setQuestionTimer(30);
     } catch (error) {
       setMessage('Error adding question');
     }
@@ -45,7 +58,7 @@ export default function Admin() {
       const response = await fetch('http://localhost:8080/api/admin/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ questions })
+        body: JSON.stringify(questions)
       });
       const data = await response.json();
       setMessage(data.message || 'Questions uploaded');
@@ -102,6 +115,18 @@ export default function Admin() {
               </option>
             ))}
           </select>
+          <div className="timer-input-group">
+            <label htmlFor="timer">Timer per question (seconds):</label>
+            <input
+              id="timer"
+              type="number"
+              min="5"
+              max="300"
+              value={questionTimer}
+              onChange={(e) => setQuestionTimer(parseInt(e.target.value) || 30)}
+              placeholder="Seconds"
+            />
+          </div>
           <button type="submit">Add Question</button>
         </form>
       )}
@@ -109,7 +134,7 @@ export default function Admin() {
       {adminMode === 'bulk' && (
         <form onSubmit={handleBulkUpload} className="form-card">
           <textarea
-            placeholder="Paste JSON array of questions"
+            placeholder="Paste JSON array of questions with timer field: {text, options[], correctIndex, timer}"
             value={jsonInput}
             onChange={(e) => setJsonInput(e.target.value)}
             rows="10"

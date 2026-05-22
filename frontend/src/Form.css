@@ -1,3 +1,8 @@
+/**
+ * Form.css - Stylesheet for all form components including input fields, buttons, textareas, and form validation messages.
+ * Provides consistent styling across quiz forms, admin panel forms, and authentication forms with focus states and animations.
+ */
+
 .form-card {
   background: white;
   padding: 2rem;
@@ -72,4 +77,34 @@
   text-align: center;
   margin-top: 1rem;
   animation: slideUp 0.3s ease-out;
+}
+
+/* ========== Timer Input Styling ========== */
+.timer-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.timer-input-group label {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.95rem;
+}
+
+.timer-input-group input[type="number"] {
+  width: 100%;
+  padding: 0.8rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.timer-input-group input[type="number"]:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
